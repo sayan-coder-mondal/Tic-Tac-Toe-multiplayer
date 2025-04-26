@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="nav">
+        <button id="exit" style="display: none;"><span>&#8592;</span> Exit</button>
+        <div id="logo">TicTacToe</div>
+    </div>
+
+    <div id="mainContainer">
+        <div id="upperContainer">
+
+            <div id="createContainer">
+                <input type="text" id="createInp" maxlength="8">
+                <button id="createBtn">Create</button>
+            </div>
+
+            <div id="searchContainer">
+                <input type="text" id="searchInp" maxlength="8">
+                <button id="searchBtn">Join</button>
+            </div>
+
+            <button onclick="searchRandom()">Search Opponent Randomly</button>
+            <button onclick="localMulBtn()">Local Multiplayer</button>
+        </div>
+
+        <div id="lowerContainer" style="display: none;">
+            <div id="turn">Current Player <span id="symbolId">X</span></div>
+            <div id="container">
+                <div class="box left top" id="box1"></div>
+                <div class="box top" id="box2"></div>
+                <div class="box top right" id="box3"></div>
+                <div class="box left" id="box4"></div>
+                <div class="box" id="box5"></div>
+                <div class="box right" id="box6"></div>
+                <div class="box left bottom" id="box7"></div>
+                <div class="box bottom" id="box8"></div>
+                <div class="box right bottom" id="box9"></div>
+            </div>
+            <button id="btn_new_game" style="display: none;" onclick="new_game()">New Game</button>
+        </div>
+
+        <div id="test"></div>
+    </div>
+
+    <div id="dull_bg" style="display: none;">
+    </div>
+    <div id="alert_box" style="display: none;">
+        <p>Your opponent has left the game.</p>
+        <button onclick="location.reload()">Exit</button>
+    </div>
+    <div id="confirm_box" style="display: none;">
+        <p>Are you sure to exit the match?</p>
+        <div>
+            <button onclick="location.reload()">Yes</button>
+            <button onclick="cancel_popup()">Cancel</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        // var socket = io();
+        // console.log(socket);
+
+        var socket;
+
+
+        var num = document.getElementById("num");
+        var btn = document.getElementById("btn");
+
+        var createInp = document.getElementById('createInp');
+        var searchInp = document.getElementById('searchInp');
+        var createBtn = document.getElementById('createBtn');
+        var searchBtn = document.getElementById('searchBtn');
+        var symbolId = document.getElementById('symbolId');
+
+        var roomNum;
+        var creatorId;
+        var joinerId;
+        var turn;
+        var symbol = 'X';
+        var result = 'none';
+        var firstTurn;
+        var secondTurn;
+        var roomSize;
+
+
+        let x1 = document.getElementsByClassName('box')[0];
+        let x2 = document.getElementsByClassName('box')[1];
+        let x3 = document.getElementsByClassName('box')[2];
+        let x4 = document.getElementsByClassName('box')[3];
+        let x5 = document.getElementsByClassName('box')[4];
+        let x6 = document.getElementsByClassName('box')[5];
+        let x7 = document.getElementsByClassName('box')[6];
+        let x8 = document.getElementsByClassName('box')[7];
+        let x9 = document.getElementsByClassName('box')[8];
+        let t = document.getElementById('turn');
+
+
+
+        function localMulBtn() {
+            document.getElementById('upperContainer').style.display = 'none';
+            document.getElementById('lowerContainer').style.display = '';
+            document.getElementById('exit').style.display = '';
+        }
+
+
+        function compare(a1, a2, a3) {
+            if (a1.innerText == a2.innerText && a2.innerText == a3.innerText && a1.innerText != '') {
+                a1.style.backgroundColor = 'rgb(115, 255, 115)';
+                a2.style.backgroundColor = 'rgb(115, 255, 115)';
+                a3.style.backgroundColor = 'rgb(115, 255, 115)';
+                for (let i = 0; i < 9; i++) {
+                    document.getElementsByClassName('box')[i].removeAttribute('onclick');
+                }
+                t.innerText = `Winner Player ${a1.innerText}`;
+                result = a1.innerText;
+
+                symbol = 'X';
+            }
+        }
+
+        // Win function
+        function win() {
+            if ((x1.innerText != '' && x2.innerText != '' && x3.innerText != '' && x4.innerText != '' && x5.innerText != '' && x6.innerText != '' && x7.innerText != '' && x8.innerText != '' && x9.innerText != '') && (x1)) {
+                t.innerText = `Match Tie`;
+                result = 'tie'
+            }
+            compare(x1, x2, x3);
+            compare(x1, x4, x7);
+            compare(x7, x8, x9);
+            compare(x9, x6, x3);
+            compare(x4, x5, x6);
+            compare(x2, x5, x8);
+            compare(x1, x5, x9);
+            compare(x3, x5, x7);
+
+        }
+
+
+
+        function searchRandom() {
+            socket = io();
+            initializeSocketListeners();
+            socket.emit('searchRandomRoom', { search: true })
+        }
+
+
+        createBtn.addEventListener('click', () => {
+            socket = io();
+            initializeSocketListeners();
+            socket.emit('createRoom', createInp.value);
+        });
+
+        searchBtn.addEventListener('click', () => {
+            socket = io();
+            initializeSocketListeners();
+            socket.emit('searchRoom', searchInp.value);
+        });
+
+
+        function initializeSocketListeners() {
+            socket.on('roomExists', (roomCode) => {
+                alert(`Room ${roomCode} already exists!`);
+            });
+
+            socket.on('noSuchRoom', (roomCode) => {
+                alert(`Room ${roomCode} does not exist!`);
+            });
+
+            socket.on('roomFull', (roomCode) => {
+                socket = io();
+                alert(`Room ${roomCode} is already full!`);
+            });
+
+            socket.on('connectedRoom', (data) => {
+                // console.log(data);
+                document.getElementById('test').innerText = "Room number: " + data.roomCode;
+                roomNum = data.roomCode;
+                roomSize = data.roomSize;
+
+                if (data.creatorId) {
+                    creatorId = data.creatorId;
+                    turn = creatorId;
+                    firstTurn = turn;
+                    // console.log(turn);
+                }
+                // console.log(turn);
+
+                if (data.joinerId) {
+                    joinerId = data.joinerId;
+                }
+
+
+                if (creatorId == socket.id) {
+                    if (roomSize == 1) {
+                        document.getElementById('turn').innerHTML = "Please wait for opponent...";
+                    }
+                    else if (roomSize == 2) {
+                        document.getElementById('turn').innerHTML = "Your turn";
+                    }
+                }
+                else {
+                    // console.log("check");
+                    // console.log(creatorId);
+
+                    document.getElementById('turn').innerHTML = "Opponent's turn";
+                }
+
+
+                document.getElementById('upperContainer').style.display = 'none';
+                document.getElementById('lowerContainer').style.display = '';
+                document.getElementById('exit').style.display = '';
+            });
+
+
+            socket.on('serverTurn', (data) => {
+                turn = data.turn;
+                // console.log("sdjdsjdn: "+turn);
+
+                if (turn == creatorId) {
+                    // symbolId.innerText = 'X';
+                    // console.log(data.move);
+
+                    document.getElementById(data.move).innerText = 'O';
+                    document.getElementById(data.move).style.color = 'blue';
+                }
+                else if (turn == joinerId) {
+                    // symbolId.innerText = 'O';
+                    // console.log(data.move);
+
+                    document.getElementById(data.move).innerText = 'X';
+                    document.getElementById(data.move).style.color = 'red';
+                }
+
+                if (turn == socket.id) {
+                    document.getElementById('turn').innerHTML = "Your turn";
+                }
+                else {
+                    document.getElementById('turn').innerHTML = "Opponent's turn";
+                }
+
+                win();
+                // console.log(result);
+                // console.log(turn);
+
+                if (result != 'none') {
+                    document.getElementById('btn_new_game').style.display = "";
+                }
+            });
+
+
+
+            socket.on('serverNewGameEvent', (data) => {
+                if (data.newGame == true) {
+                    if (firstTurn == creatorId) {
+                        turn = joinerId;
+                        firstTurn = joinerId;
+                    }
+                    else {
+                        turn = creatorId;
+                        firstTurn = creatorId;
+                    }
+
+                    if (turn == socket.id) {
+                        document.getElementById('turn').innerHTML = "Your turn";
+                        symbol = 'X';
+                    }
+                    else {
+                        document.getElementById('turn').innerHTML = "Opponent's turn";
+                    }
+
+                    for (let i = 0; i < 9; i++) {
+                        document.getElementsByClassName('box')[i].innerText = '';
+                        document.getElementsByClassName('box')[i].style.backgroundColor = 'antiquewhite';
+                    }
+
+                    result = 'none';
+
+                    document.getElementById('btn_new_game').style.display = "none";
+                }
+            });
+
+
+            socket.on('leftRoomAlert', (data) => {
+                // console.log(data);
+
+                if (data.exit) {
+                    document.getElementById('dull_bg').style.display = "";
+                    document.getElementById('alert_box').style.display = "";
+                }
+            });
+
+        }
+
+
+        document.getElementById('container').addEventListener('click', (e) => {
+            // console.log(turn);
+            // console.log(socket.id);
+
+            if (socket && turn == socket.id && e.target.innerText == '' && result == 'none' && roomSize == 2) {
+                // console.log(e.target);
+                socket.emit('userTurn', { creatorId, joinerId, turn, move: e.target.id, room: roomNum })
+            }
+
+            if (!socket && result == 'none') {
+                symbolId = document.getElementById('symbolId')
+                e.target.innerText = symbol;
+                if (e.target.innerText == 'X') {
+                    e.target.style.color = 'red';
+                }
+                else {
+                    e.target.style.color = 'blue';
+                }
+
+                if (symbol == 'X') {
+                    symbol = 'O';
+                    symbolId.innerText = 'O';
+                }
+                else {
+                    symbol = 'X';
+                    symbolId.innerText = 'X';
+                }
+
+                win();
+            }
+
+            if (result != 'none') {
+                document.getElementById('btn_new_game').style.display = "";
+            }
+        });
+
+
+        function new_game() {
+            if (socket) {
+                socket.emit('userNewGameEvent', { newGame: true, room: roomNum });
+            }
+            else {
+                for (let i = 0; i < 9; i++) {
+                    document.getElementsByClassName('box')[i].innerText = '';
+                    document.getElementsByClassName('box')[i].style.backgroundColor = 'antiquewhite';
+                }
+                result = 'none';
+                document.getElementById('btn_new_game').style.display = "none";
+
+                t.innerHTML = `Current Player <span id="symbolId">X</span>`;
+            }
+        }
+
+
+
+        document.getElementById('exit').addEventListener('click', () => {
+            document.getElementById('dull_bg').style.display = "";
+            document.getElementById('confirm_box').style.display = "";
+        });
+
+        function cancel_popup() {
+            document.getElementById('dull_bg').style.display = "none";
+            document.getElementById('alert_box').style.display = "none";
+            document.getElementById('confirm_box').style.display = "none";
+        }
+    </script>
+</body>
+
+</html>

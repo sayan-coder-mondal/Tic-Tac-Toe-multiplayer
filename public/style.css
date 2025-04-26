@@ -1,0 +1,364 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+body{
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+#turn{
+    text-align: center;
+    color:red;
+    font-size: 50px;
+}
+#container{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    margin: 30px 0;
+}
+.box{
+    border: 2px solid black;
+    height: 100px;
+    width: 100px;
+    background-color: antiquewhite;
+    font-size: 80PX;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Baloo Bhai 2', cursive;
+}
+.box:hover{
+    cursor: pointer;
+}
+.left{
+    border-left: 0;
+}
+.right{
+    border-right: 0;
+}
+.top{
+    border-top: 0;
+}
+.bottom{
+    border-bottom: 0;
+}
+
+#btn_new_game{
+    display: block;
+    margin: 0px auto 20px;
+    background-color: rgb(59, 59, 255);
+    border: 3px solid black;
+    border-radius: 10px;
+    color: white;
+    height: 40px;
+    width: 100px;
+    cursor: pointer;
+    font-size: 15px;
+    border: none;
+}
+
+
+
+
+
+
+#mainContainer {
+    flex: 1;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #3c3c5e);
+    /* color: white; */
+    /* min-height: 100dvh; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modern Glassmorphism Style */
+#upperContainer {
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    text-align: center;
+}
+
+#upperContainer input[type="text"] {
+    padding: 12px 15px;
+    border: none;
+    border-radius: 12px;
+    outline: none;
+    font-size: 16px;
+    width: 320px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: background 0.3s;
+}
+
+#upperContainer input[type="text"]:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Stylish Buttons */
+#upperContainer button {
+    padding: 12px 20px;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    width: 320px;
+}
+
+#upperContainer button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+}
+
+
+
+
+#nav{
+    width: 100%;
+}
+
+#logo{
+    font-size: 50px;
+    font-weight: bolder;
+    color: white;
+    background-color: black;
+    text-align: center;
+    border-bottom: 2px solid white;
+    padding: 10px 0;
+}
+
+#exit{
+    position: absolute;
+    left:20px;
+    top: 20px;
+    width: 80px;
+    height: 40px;
+    background-color: #4facfe;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#lowerContainer{
+    position: absolute;
+    top: 150px;
+}
+
+#dull_bg{
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black;
+    opacity: 0.8;
+}
+
+#alert_box, #confirm_box{
+    width: 400px;
+    height: 180px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: black;
+    z-index: 1;
+    opacity: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-size: 24px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+#alert_box button, #confirm_box button{
+    border: none;
+    cursor: pointer;
+    width: 80px;
+    background-color: #006ecf;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 0 10px;
+    font-size: 18px;
+    color: white;
+}
+
+
+
+
+
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+    #upperContainer {
+        max-width: 75dvw;
+        width: 75dvw;
+    }
+
+    #upperContainer button {
+        width: 65dvw;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    #upperContainer input[type="text"] {
+        width: 65dvw;
+        font-size: 14px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .box{
+        width: 80px;
+        height: 80px;
+        font-size: 65px;
+    }
+
+    #turn{
+        font-size: 35px;
+    }
+
+    #logo{
+        font-size: 30px;
+    }
+
+    #exit{
+        left: 10px;
+        top: 10px;
+        width: 60px;
+        height: 35px;
+        font-size: 15px;
+    }
+
+    #alert_box, #confirm_box{
+        width: 280px;
+        font-size: 18px;
+    }
+}
+
+
+@media screen and (max-height: 700px){
+    #upperContainer {
+        gap: 25px;
+        padding: 20px;
+    }
+
+    #upperContainer button {
+        font-size: 12px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    #upperContainer input[type="text"] {
+        margin-bottom: 6px;
+        font-size: 12px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .box{
+        width: 80px;
+        height: 80px;
+        font-size: 65px;
+    }
+
+    #turn{
+        font-size: 35px;
+    }
+
+    #logo{
+        font-size: 30px;
+    }
+
+    #exit{
+        left: 10px;
+        top: 10px;
+        width: 60px;
+        height: 35px;
+        font-size: 15px;
+    }
+
+    #lowerContainer{
+        top: 75px;
+    }
+
+    #container{
+        margin: 15px 0;
+    }
+}
+
+@media screen and (max-height: 450px), screen and (max-width: 320px){
+    .box{
+        width: 60px;
+        height: 60px;
+        font-size: 45px;
+    }
+
+    #turn{
+        font-size: 25px;
+    }
+
+    #container{
+        margin: 10px 0;
+    }
+
+    #logo{
+        font-size: 20px;
+    }
+
+    #exit{
+        left: 7px;
+        top: 7px;
+        width: 40px;
+        height: 25px;
+        font-size: 10px;
+    }
+
+    #lowerContainer{
+        top: 50px;
+    }
+
+    #alert_box, #confirm_box{
+        width: 180px;
+        height: 120px;
+        font-size: 12px;
+    }
+
+    #alert_box button, #confirm_box button{
+        width: 60px;
+        font-size: 12px;
+    }
+}
+
+#test{
+    display: none;
+}
