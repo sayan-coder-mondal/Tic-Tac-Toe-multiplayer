@@ -60,6 +60,13 @@
         <div id="test"></div>
     </div>
 
+
+    <!-- From Uiverse.io by SachinKumar666 -->
+    <div id="loader_container" style="display: none;">
+        <div class="loader"></div>
+    </div>
+
+
     <div id="dull_bg" style="display: none;">
     </div>
     <div id="alert_box" style="display: none;">
@@ -158,6 +165,7 @@
 
 
         function searchRandom() {
+            document.getElementById("loader_container").style.display="flex";
             socket = io();
             initializeSocketListeners();
             socket.emit('searchRandomRoom', { search: true })
@@ -165,12 +173,20 @@
 
 
         createBtn.addEventListener('click', () => {
+            if(createInp.value.length==0){
+                return;
+            }
+            document.getElementById("loader_container").style.display="flex";
             socket = io();
             initializeSocketListeners();
             socket.emit('createRoom', createInp.value);
         });
 
         searchBtn.addEventListener('click', () => {
+            if(searchInp.value.length==0){
+                return;
+            }
+            document.getElementById("loader_container").style.display="flex";
             socket = io();
             initializeSocketListeners();
             socket.emit('searchRoom', searchInp.value);
@@ -179,14 +195,17 @@
 
         function initializeSocketListeners() {
             socket.on('roomExists', (roomCode) => {
+                document.getElementById("loader_container").style.display="none";
                 alert(`Room ${roomCode} already exists!`);
             });
 
             socket.on('noSuchRoom', (roomCode) => {
+                document.getElementById("loader_container").style.display="none";
                 alert(`Room ${roomCode} does not exist!`);
             });
 
             socket.on('roomFull', (roomCode) => {
+                document.getElementById("loader_container").style.display="none";
                 socket = io();
                 alert(`Room ${roomCode} is already full!`);
             });
@@ -226,6 +245,7 @@
                 }
 
 
+                document.getElementById("loader_container").style.display="none";
                 document.getElementById('upperContainer').style.display = 'none';
                 document.getElementById('lowerContainer').style.display = '';
                 document.getElementById('exit').style.display = '';
