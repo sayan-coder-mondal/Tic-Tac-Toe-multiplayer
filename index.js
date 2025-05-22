@@ -172,6 +172,9 @@ io.on('connection', (socket) => {
 
   // Handle disconnect
   socket.on('disconnect', () => {
+
+    socket.to(roomName).emit('disconnectRoomAlert', { exit: true });
+
     // Find all rooms and check which room the disconnected user was in
     // console.log(rooms);
 
